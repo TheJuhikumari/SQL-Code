@@ -1,0 +1,388 @@
+CREATE DATABASE MASAI_1;
+USE MASAI_1;
+
+SELECT FIRSTNAME FROM STUDENT_MARKS
+ORDER BY FIRSTNAME
+LIMIT 3;
+
+SELECT NAME FROM STUDENT
+ORDER BY NAME
+LIMIT 3;
+
+SELECT NAME, CLASS, SECTION FROM STUDENT
+WHERE CLASS = 9 AND SECTION = "D"
+ORDER BY NAME DESC
+LIMIT 3;
+
+
+#--- LIKE STATEMENT
+
+select * from student
+where name like "MY_";
+
+select * from student
+where name = 'OLIVIA';
+
+select * from student
+where name like "E___";
+
+select * from student
+where name like "____S";
+
+select * from student
+where name like "S%";
+
+select * from student
+where name like "%S";
+
+select * from student
+where name like "%E";
+
+select * from student
+where name like "%AND%";
+
+select * from student
+where name like "%A%E";
+
+select * from student
+where name like "_A%";
+
+
+#--- DISTICT
+
+select distinct CLASS
+from student;
+
+select distinct CLASS, section
+from student
+ORDER BY CLASS;
+
+select distinct CLASS, section
+from student
+ORDER BY CLASS;
+
+
+#--- COUNT
+
+select count(distinct class) AS 'COUNT'
+FROM student;
+
+select count(distinct class, SECTION) AS 'COUNT'
+FROM student;
+
+
+#--- DISTINCT WITH WHERE
+
+select distinct name AS 'COUNT'
+FROM student
+WHERE class = 9 AND section = "D"
+order by name;
+
+select *, SCIENCE+MATHS
+FROM student
+WHERE GENDER = 'F';
+
+
+#--- MAX
+
+select MAX(MATHS)
+from student
+where section = 'd' and class = 9 and gender = 'm';
+
+select * from student;
+
+
+#--- Data cleaning & remove dublicates
+
+select distinct * from student;
+
+
+#--- GROUP BY
+
+select count(*) AS males
+FROM student
+where gender ='m';
+
+select count(*) AS FEmales
+FROM student
+where gender ='F';
+
+select class, COUNT(*) AS COUNNTR 
+FROM student
+group by class
+order by class ASC;
+
+select section, COUNT(*) AS COUNNTR 
+FROM student
+where class = 10
+group by section
+order by section ASC
+limit 2;
+
+select * from student;
+
+select gender, class, section, max(maths) as MMAX
+FROM student
+group by gender, class, section
+order by gender, class, section;
+
+
+#--- Having used to filter on aggregation 
+
+select SECTION, class, AVG(MATHS) as avgmaths
+from student
+group by  SECTION, class
+having avg(maths) > 75;
+
+select SECTION, class, AVG(science) as avgsci
+from student
+group by  SECTION, class
+having avg(science) > 51;
+
+select * FROM users;
+select * FROM blogs;
+select * FROM category;
+select * FROM comments;
+
+
+#--- Join
+
+SELECT blogs.ID, blogs.title, users.name, users.email 
+FROM blogs 
+JOIN users ON blogs.id = users.id;
+
+SELECT blogs.ID, blogs.title, category.category_name
+FROM blogs 
+JOIN category ON blogs.id = category.id;
+
+
+#--- AGGREGATION WITH JOIN(min, max,avg,sum,count)
+
+select * from blogs
+join users
+on blogs.user_id = users.id;
+
+select * from blogs
+right join users
+on blogs.user_id = users.id;
+
+select * from blogs
+left join users
+on blogs.user_id = users.id;
+
+select users.id, users.name, count(blogs.id) AS BLOG_WRITEEN
+from users
+left join blogs
+on blogs.user_id = users.id
+group by users.id, users.name;
+
+select blog_id, count(comments.id) AS COMMENT_WRITEEN
+from blogs
+left join comments
+on blogs.user_id = commentS.id
+group by blog_id;
+
+
+select blog_id, count(comments.id) AS COMMENT_WRITEEN
+from blogs
+left join comments
+on blogs.id = commentS.blog_id
+group by blog_id;
+
+
+#--- Subquery
+
+select max(MATHS)
+FROM student;
+
+select * FROM student
+where MATHS = (select max(MATHS)
+FROM student);
+
+select * FROM student
+WHERE science = (select max(science) from student WHERE science < 20);
+
+select * FROM student
+WHERE class = 9;
+
+select * FROM student
+WHERE CLASS = (select class FROM student WHERE name = 'AALIYAH');
+
+select max(MATHS+science+english) FROM student
+WHERE CLASS = (select class FROM student WHERE name = 'AALIYAH') AND gender = 'F';
+
+
+#--- UNION
+
+create table t1(
+id int);
+
+insert into t1 
+values (1),
+	   (2),
+       (3);
+create table t2(
+id int);
+insert into t1 
+values (1),
+	   (2),
+       (3),
+       (5),
+       (6),
+       (7),
+       (8);
+       
+ 
+select * from t1
+union
+select * from t2;
+       
+select * from PERSONS;
+
+SELECT NAME, '18-24' AS AGEGROUP
+FROM persons
+WHERE AGE BETWEEN 18 AND 24
+UNION
+SELECT NAME, '25-30' AS AGEGROUP
+FROM persons
+WHERE AGE BETWEEN 25 AND 30;
+
+SELECT GENDER, '18-24' AS AGEGROUP, count(*) AS NUMPERSON
+FROM persons
+WHERE AGE BETWEEN 18 AND 24
+GROUP BY gender, AGEGROUP
+UNION
+SELECT GENDER, '25-30' AS AGEGROUP, count(*) AS NUMPERSON
+FROM persons
+WHERE AGE BETWEEN 25 AND 30
+GROUP BY gender, AGEGROUP
+ORDER BY GENDER;
+
+
+#--- CASE STATEMENT
+
+SELECT 
+	CASE
+		WHEN COUNTRY IN ('INDIA', 'SRI LANKA', 'BHUTAN', 'BANGLADESH') THEN 'ASIA'
+        WHEN COUNTRY IN ('AUSTRALIA', 'NEW ZEALNAD') THEN 'ANZ'
+        WHEN COUNTRY IN ('IRELAND', 'ITALY', 'SPAIN') THEN 'EUROPE'
+        WHEN COUNTRY IN ('USA') THEN 'NORTH AMERICA'
+        WHEN COUNTRY IN ('BRAZIL', 'CHILE') THEN 'SOUTH AMERICA'
+	END AS CONTINENT,
+    COUNT(*) AS NUBMER 
+FROM persons
+GROUP BY CONTINENT;
+
+SELECT 
+	CASE COUNTRY
+		WHEN 'INDIA' THEN 'ASIA'
+		ELSE 'OTHERS'
+	END AS CONTINENT,
+    COUNT(*) AS NUBMER 
+FROM persons
+GROUP BY CONTINENT;
+
+
+#--- IF STATEMENT
+
+SELECT GENDER, if(AGE <= 18, 'MINOR', 'ADULT') AS AGEGRP, count(*) AS NUMB
+FROM persons
+group by GENDER, AGEGRP; 
+
+select gender,
+case 
+	when age <= 18 then 'mior'
+    else 'adult'
+end as agegrp, count(*) as numb
+from persons
+group by gender, agegrp;
+
+select c.customerid, concat(firstname, ' ', lastname) as name_, sum(total_order_amount) as total_
+from customers as c
+join orders as o
+on c.customerid = o.customerid
+group by c.customerid, name_;
+
+
+SELECT 
+    o.CustomerID,
+    COALESCE(CONCAT(CASE WHEN c.FirstName IS NULL THEN '' ELSE c.FirstName END, ' ', CASE WHEN c.LastName IS NULL THEN '' ELSE c.LastName END), c.FirstName) AS Full_Name,
+    SUM(o.Total_Order_Amount) AS Total_Spend
+FROM 
+    Orders o
+JOIN 
+    Customers c ON o.CustomerID = c.CustomerID
+WHERE 
+    CONCAT(c.FirstName, c.LastName) LIKE '%a%'
+GROUP BY 
+    o.CustomerID, Full_Name
+ORDER BY 
+    o.CustomerID ASC;
+    
+SELECT 
+o.OrderID,
+o.CustomerID,
+replace(replace(p.PaymentType, 'Credit card' , 'credit'), 'debit' , 'debit card') AS Payment_Type,
+o.Total_Order_Amount
+FROM 
+    Orders as o
+join payments as p
+on o.PaymentID = p.PaymentID
+WHERE 
+    PaymentType IN ('Credit card', 'Debit card')
+ORDER BY 
+    o.OrderID ASC;
+
+SELECT 
+    o.OrderID,
+    o.CustomerID,
+    REPLACE(PaymentType, 'Credit card', 'Credit') , 'Debit card', 'Debit') AS Payment_Type,
+    Total_Order_Amount
+FROM 
+    Orders as o
+join payments as p
+on o.PaymentID = p.PaymentID
+WHERE 
+    PaymentType IN ('Credit card', 'Debit card')
+ORDER BY 
+    OrderID ASC;
+    
+select o.customerid, o.orderid, c.firstname, c.lastname, o.paymentid, o.orderdate, o.total_order_amount
+from orders as o
+join customers as c
+on o.customerid = c.customerid
+JOIN 
+    (
+        SELECT 
+            CustomerID,
+            MIN(Total_Order_Amount) AS Min_Total_Order_Amount
+        FROM 
+            Orders
+        GROUP BY 
+            CustomerID
+    ) AS min_orders ON o.CustomerID = min_orders.CustomerID
+                       AND o.Total_Order_Amount = min_orders.Min_Total_Order_Amount
+ORDER BY 
+    o.CustomerID ASC;
+
+SELECT 
+    p.Product,
+    p.Brand,
+    p.Sale_Price,
+    p.Market_Price
+FROM 
+    Products p
+JOIN (
+    SELECT 
+        ProductID
+    FROM 
+        OrderDetails
+    WHERE 
+        Quantity >= 5
+    GROUP BY 
+        ProductID
+    HAVING 
+        COUNT(*) > 1
+) AS od ON p.ProductID = od.ProductID
+ORDER BY 
+    p.Product ASC;
