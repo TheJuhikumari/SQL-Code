@@ -1,0 +1,283 @@
+# Creating a demo database 
+CREATE DATABASE demo;
+
+# Selecting a database 
+USE demo;
+
+# Constraints ->
+
+# Primary Key (Way 1) 
+CREATE TABLE Users (
+ID INT PRIMARY KEY,
+Name VARCHAR(30)
+);
+
+# Dropping the table 
+DROP TABLE Users;
+
+# Primary Key (Way 2)
+CREATE TABLE Users (
+ID INT,
+Name VARCHAR(30),
+CONSTRAINT pk_users_ PRIMARY KEY (ID)
+);
+
+# Dropping the table 
+DROP TABLE Users;
+
+# Unique Constraint (Way 1)
+CREATE TABLE Users (
+ID INT, 
+Name VARCHAR(30),
+CONSTRAINT unique_constraint UNIQUE (ID)
+);
+
+# Dropping the table 
+DROP TABLE Users;
+
+# Unique Constraint (Way 2)
+CREATE TABLE Users (
+ID INT UNIQUE, 
+Name VARCHAR(30)
+);
+
+# Inserting values 
+INSERT INTO Users 
+VALUES 
+(1, 'Prateek');
+
+SELECT *
+FROM Users;
+
+# Inserting values 
+INSERT INTO Users 
+VALUES 
+(1, 'Nrupul');
+
+SELECT *
+FROM Users;
+
+# Dropping the table 
+DROP TABLE Users;
+
+# Foreign Key (Way 1) 
+
+CREATE TABLE Users (
+ID INT PRIMARY KEY, 
+Name VARCHAR(30)
+);
+
+CREATE TABLE Blogs (
+ID INT PRIMARY KEY,
+Blog_Name VARCHAR(30),
+UserID INT,
+FOREIGN KEY (UserID) REFERENCES Users (ID)
+);
+
+# Dropping the tables  
+DROP TABLE Blogs;
+DROP TABLE Users;
+
+# Foreign Key (Way 2) 
+
+CREATE TABLE Users (
+ID INT PRIMARY KEY, 
+Name VARCHAR(30)
+);
+
+CREATE TABLE Blogs (
+ID INT PRIMARY KEY,
+Blog_Name VARCHAR(30),
+UserID INT,
+CONSTRAINT fk_userId_ FOREIGN KEY (UserID) REFERENCES Users(ID)
+);
+
+# Dropping the tables  
+DROP TABLE Blogs;
+DROP TABLE Users;
+
+# CHECK Constraint -> 
+
+# Way 1 ->
+CREATE TABLE Users (
+ID INT PRIMARY KEY,
+Name VARCHAR(30) CHECK (Name LIKE '%a%')
+);
+
+# Dropping the tables
+DROP TABLE Users;
+
+# Way 2 ->
+CREATE TABLE Users (
+ID INT PRIMARY KEY,
+Name VARCHAR(30),
+CONSTRAINT ck_users_ CHECK (Name LIKE '%a%')
+);
+
+# Inserting the data into the Users table 
+INSERT INTO Users 
+VALUES 
+(1, 'Ajay');
+
+# Inserting the data into the Users table 
+INSERT INTO Users 
+VALUES 
+(2, 'Nrupul');
+
+SELECT *
+FROM Users;
+
+# Dropping the tables
+DROP TABLE Users;
+
+# Default Constraint 
+CREATE TABLE Users (
+ID INT PRIMARY KEY,
+Name VARCHAR(30) DEFAULT 'String'
+);
+
+# Inserting the data 
+INSERT INTO Users (ID) 
+VALUES 
+(1),
+(2),
+(3);
+
+SELECT *
+FROM Users;
+
+# Dropping the tables
+DROP TABLE Users;
+
+# NOT NULL Constraint 
+CREATE TABLE Users (
+ID INT NOT NULL,
+Name VARCHAR(30)
+);
+
+# Inserting the data 
+INSERT INTO Users (Name)
+VALUES 
+('Piyush');
+
+# Dropping the tables
+DROP TABLE Users;
+
+# Dropping a database 
+DROP DATABASE demo;
+
+# ALTER Statement -> Change the structure of the table 
+
+SELECT * 
+FROM Customers;
+
+# Adding a new column named 'Favorite_Sport'
+ALTER TABLE Customers
+ADD Favorite_Sport VARCHAR(30);
+
+SELECT * 
+FROM Customers;
+
+# Dropping the column
+ALTER TABLE Customers
+DROP COLUMN Favorite_Sport;
+
+# Adding a new columns and assigning a default value to that column 
+ALTER TABLE Customers
+ADD Favorite_Sport VARCHAR(30);
+
+ALTER TABLE Customers
+ALTER Favorite_Sport SET DEFAULT 'Cricket';
+
+SELECT * FROM Customers;
+
+# Inserting the data
+INSERT INTO Customers (CustomerID, FirstName, City)
+VALUES
+(1, 'Prateek', 'Bangalore');
+
+SELECT * FROM Customers;
+
+# Dropping the default value 
+ALTER TABLE Customers 
+ALTER Favorite_Sport DROP DEFAULT;
+
+# Inserting the data
+INSERT INTO Customers (CustomerID, FirstName, City)
+VALUES
+(2, 'Nrupul', 'Pune');
+
+ALTER TABLE Customers
+ALTER Favorite_Sport SET DEFAULT NULL;
+
+# Inserting the data
+INSERT INTO Customers (CustomerID, FirstName, City)
+VALUES
+(2, 'Nrupul', 'Pune');
+
+SELECT * 
+FROM Customers;
+
+# Dropping the primary key 
+ALTER TABLE Customers 
+DROP PRIMARY KEY;
+
+# Adding the primary key 
+ALTER TABLE Customers
+ADD PRIMARY KEY (CustomerID);
+
+# Dropping the primary key 
+ALTER TABLE Customers 
+DROP PRIMARY KEY;
+
+# Adding the primary key (way 2)
+ALTER TABLE Customers
+ADD CONSTRAINT pk_cust_ PRIMARY KEY (CustomerID);
+
+# Inserting the data 
+INSERT INTO Customers (CustomerID, FirstName)
+VALUES 
+(5, 'Ajay');
+
+SELECT * 
+FROM Customers;
+
+# Inserting the data 
+INSERT INTO Customers (CustomerID, FirstName)
+VALUES 
+(5, 'Randhir');
+
+SELECT * 
+FROM Customers;
+
+# Changing the datatype of a column 
+ALTER TABLE Customers 
+MODIFY COLUMN Date_of_Birth DATE;
+
+SELECT * 
+FROM Customers;
+
+# Renaming a column 
+ALTER TABLE Customers
+RENAME COLUMN CustomerID TO ID;
+
+SELECT * 
+FROM Customers;
+
+# Renaming the table 
+ALTER TABLE Customers
+RENAME Customer_Details;
+
+SELECT * 
+FROM Customers;
+
+SELECT * 
+FROM Customer_Details;
+
+SELECT 
+    CustomerID,
+    SUM(Total_Order_Amount) AS TotalAmountSpent
+FROM 
+    Orders
+GROUP BY 
+    CustomerID;
